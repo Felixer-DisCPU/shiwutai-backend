@@ -1,0 +1,49 @@
+server:
+  port: 8080
+  tomcat:
+    accesslog:
+      enabled: true
+      directory: ./logs
+      pattern: '%t %a %r %s %D'
+
+spring:
+  datasource:
+    url: jdbc:h2:file:./data/shiwutai;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate.dialect: org.hibernate.dialect.H2Dialect
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+# 应用自定义配置（均可用环境变量覆盖，便于公网部署）
+app:
+  # 上传文件保存目录
+  upload-dir: ./uploads
+  # 对外可访问的基础地址（公网部署时改成 https://你的域名）；上传接口返回的图片 URL 用它拼接
+  server-public-url: http://localhost:8080
+  # 微信小程序配置（不填则登录返回 demo_openid，便于本地联调）
+  wx:
+    appid: ${WX_APPID:}
+    secret: ${WX_SECRET:}
+
+# 视觉 / 文本大模型（OpenAI 兼容）
+# 图片识别与文本建议可分别配置；文本未单独配置时自动回落到视觉配置
+llm:
+  api-key: ${LLM_API_KEY:}
+  base-url: ${LLM_BASE_URL:https://api.openai.com/v1}
+  model: ${LLM_MODEL:gpt-4o}
+  text-api-key: ${LLM_TEXT_API_KEY:}
+  text-base-url: ${LLM_TEXT_BASE_URL:}
+  text-model: ${LLM_TEXT_MODEL:gpt-4o-mini}
